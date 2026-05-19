@@ -1,0 +1,7 @@
+# Local only - do not push
+dist/
+samples/
+*.md
+!README.md
+フィードバック.md
+作業ログ.md
