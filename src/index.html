@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCFOLIA Log Formatter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="header">
+      <h1>CCFOLIA Log Formatter</h1>
+      <div class="header-controls">
+        <button id="btn-tabs">Tabs</button>
+        <button id="btn-colors">Colors</button>
+        <button id="btn-export" disabled>Export</button>
+      </div>
+    </header>
+
+    <section id="file-area">
+      <div id="drop-zone">
+        <p>Drop CCFOLIA HTML log files here<br>or</p>
+        <label class="file-label">
+          <input type="file" id="file-input" accept=".html" multiple>
+          Select Files
+        </label>
+        <p class="hint">Multiple files can be merged</p>
+      </div>
+    </section>
+
+    <section id="kp-select-area" class="hidden">
+      <div class="kp-select-box">
+        <h2>KP / Narrator Selection</h2>
+        <label class="title-input-label">
+          <span>Title:</span>
+          <input type="text" id="scenario-title" placeholder="Scenario title">
+        </label>
+        <p>Select the speaker who acts as KP (narrator):</p>
+        <div id="kp-speaker-list"></div>
+        <div class="kp-actions">
+          <button id="kp-confirm" disabled>OK</button>
+          <button id="kp-skip">Skip (no KP)</button>
+          <button id="kp-reselect">Reselect Files</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="toolbar" class="hidden">
+      <div class="toolbar-row">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search...">
+          <span id="search-count"></span>
+        </div>
+        <div class="bg-color-box">
+          <label class="bg-color-label">BG:<input type="color" id="bg-color-input" value="#f5f5f5"></label>
+        </div>
+        <div class="header-color-box">
+          <label class="hdr-color-label">HDR:<input type="color" id="hdr-color1" value="#4a90d9"><input type="color" id="hdr-color2" value="#357abd"><input type="color" id="hdr-text-color" value="#ffffff"></label>
+        </div>
+        <div id="tab-filters"></div>
+      </div>
+      <nav id="chapter-nav" class="hidden"></nav>
+    </section>
+
+    <section id="log-container" class="hidden"></section>
+
+    <!-- Tab Settings Panel -->
+    <div id="tab-panel" class="side-panel hidden">
+      <div class="side-panel-header">
+        <h3>Tab Settings</h3>
+        <button id="tab-panel-close">&times;</button>
+      </div>
+      <div id="tab-list"></div>
+    </div>
+
+    <!-- Color Panel -->
+    <div id="color-panel" class="side-panel hidden">
+      <div class="side-panel-header">
+        <h3>Speaker Colors</h3>
+        <button id="color-panel-close">&times;</button>
+      </div>
+      <div id="color-list"></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Edit Message</h3>
+        <div class="edit-tab-info">
+          <span class="edit-tab-label">Tab:</span>
+          <span id="edit-tab-name" class="edit-tab-value"></span>
+        </div>
+        <label>Speaker:<input type="text" id="edit-speaker"></label>
+        <label>Content:<textarea id="edit-text" rows="5"></textarea></label>
+        <label>Color:<input type="color" id="edit-color"></label>
+        <label class="checkbox-label"><input type="checkbox" id="edit-is-kp"> KP/Narrator</label>
+        <div class="modal-actions">
+          <button id="edit-save">Save</button>
+          <button id="edit-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter Edit Modal -->
+    <div id="chapter-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Edit Chapter</h3>
+        <label>Title:<input type="text" id="chapter-title-input"></label>
+        <label>Short name (for nav):<input type="text" id="chapter-short-input" placeholder="Leave empty to use full title"></label>
+        <div class="modal-actions">
+          <button id="chapter-save">Save</button>
+          <button id="chapter-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="parser.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
