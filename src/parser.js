@@ -88,13 +88,27 @@ class CcfoliaParser {
   static detectChapters(entries, kpNames) {
     kpNames = kpNames || ['KP', 'GM', 'DM'];
     var chapters = [];
+    var manualTitles = new Set();
+
     // Match: "N話 title" (Japanese) or "Chapter N: title" / "Episode N: title" (English)
     var chapterPatternJp = /^(\d+)\u8a71\s+(.+)/;
     var chapterPatternEn = /^(?:Chapter|Episode|Scene)\s+(\d+)[:.\s]+(.+)/i;
+    // Also match: "第N話" pattern
+    var chapterPatternJp2 = /^\u7b2c(\d+)\u8a71\s*(.*)/;
+
+    // First pass: collect manual markers
+    entries.forEach(function(e) {
+      if (e.source === 'manual' && e.isChapterMarker && !e.deleted) {
+        manualTitles.add(e.chapter);
+      }
+    });
+
     entries.forEach(function(e, i) {
       // Skip manually added markers (preserve them as-is)
       if (e.source === 'manual' && e.isChapterMarker) {
-        chapters.push({ index: i, number: '', title: e.chapter });
+        if (!e.deleted) {
+          chapters.push({ index: i, number: '', title: e.chapter });
+        }
         return;
       }
       // Reset auto-detected markers before re-evaluating
@@ -109,16 +123,30 @@ class CcfoliaParser {
         if (match) {
           title = match[1] + '\u8a71 ' + match[2];
         } else {
-          match = e.contentText.match(chapterPatternEn);
+          match = e.contentText.match(chapterPatternJp2);
           if (match) {
-            title = 'Chapter ' + match[1] + ': ' + match[2];
+            title = '\u7b2c' + match[1] + '\u8a71' + (match[2] ? ' ' + match[2] : '');
+          } else {
+            match = e.contentText.match(chapterPatternEn);
+            if (match) {
+              title = 'Chapter ' + match[1] + ': ' + match[2];
+            }
           }
         }
-        if (match) {
-          var chapter = { index: i, number: match[1], title: title };
-          chapters.push(chapter);
-          e.chapter = chapter.title;
-          e.isChapterMarker = true;
+        if (match && title) {
+          // Skip if a manual marker with same/similar title already exists
+          var isDuplicate = false;
+          manualTitles.forEach(function(mt) {
+            if (mt.indexOf(title) !== -1 || title.indexOf(mt) !== -1) {
+              isDuplicate = true;
+            }
+          });
+          if (!isDuplicate) {
+            var chapter = { index: i, number: match[1], title: title };
+            chapters.push(chapter);
+            e.chapter = chapter.title;
+            e.isChapterMarker = true;
+          }
         }
       }
     });

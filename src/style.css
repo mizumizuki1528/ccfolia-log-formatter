@@ -631,6 +631,16 @@ body.dark .entry-content mark {
   background: var(--accent-hover);
 }
 
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
 #edit-cancel {
   background: var(--bg);
   color: var(--text);
@@ -1171,4 +1181,61 @@ body.dark .entry-content mark {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+/* Title edit button */
+.btn-title-edit {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-title-edit:hover {
+  background: var(--border);
+  color: var(--accent);
+}
+
+
+/* Edit icon row */
+.edit-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.edit-icon-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.edit-icon-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.edit-icon-row button {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.edit-icon-row button:hover {
+  background: var(--border);
 }

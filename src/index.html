@@ -10,6 +10,7 @@
   <div id="app">
     <header id="header">
       <h1>CCFOLIA Log Formatter</h1>
+      <button id="btn-title-edit" class="btn-title-edit hidden" title="Edit title">&#9998;</button>
       <div class="header-controls">
         <button id="btn-help" title="Help">?</button>
         <button id="btn-changelog" title="Changelog">!</button>
@@ -67,7 +68,7 @@
     <section id="log-container" class="hidden"></section>
 
     <footer id="app-footer">
-      <span class="version-info">v1.0</span>
+      <span class="version-info">v1.1</span>
     </footer>
 
     <!-- Tab Settings Panel -->
@@ -100,6 +101,13 @@
         <label>Content:<textarea id="edit-text" rows="5"></textarea></label>
         <label>Color:<input type="color" id="edit-color"></label>
         <label class="checkbox-label"><input type="checkbox" id="edit-is-kp"> KP/Narrator</label>
+        <div class="edit-icon-row">
+          <span class="edit-icon-label">Icon:</span>
+          <img id="edit-icon-preview" class="edit-icon-img" src="">
+          <button id="edit-icon-change" type="button">Change</button>
+          <button id="edit-icon-reset" type="button">Reset</button>
+          <input type="file" id="edit-icon-file" accept="image/*" class="hidden">
+        </div>
         <div class="modal-actions">
           <button id="edit-save">Save</button>
           <button id="edit-cancel">Cancel</button>
@@ -119,6 +127,18 @@
         </div>
       </div>
     </div>
+    <!-- Title Edit Modal -->
+    <div id="title-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Edit Title</h3>
+        <label>Title:<input type="text" id="title-input"></label>
+        <div class="modal-actions">
+          <button id="title-save" class="btn-primary">Save</button>
+          <button id="title-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Help Modal -->
     <div id="help-modal" class="modal hidden">
       <div class="modal-content modal-wide">

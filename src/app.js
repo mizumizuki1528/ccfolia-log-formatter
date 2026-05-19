@@ -43,6 +43,10 @@
   var editText = document.getElementById('edit-text');
   var editColor = document.getElementById('edit-color');
   var editIsKp = document.getElementById('edit-is-kp');
+  var editIconPreview = document.getElementById('edit-icon-preview');
+  var editIconChange = document.getElementById('edit-icon-change');
+  var editIconReset = document.getElementById('edit-icon-reset');
+  var editIconFile = document.getElementById('edit-icon-file');
   var editSave = document.getElementById('edit-save');
   var editCancel = document.getElementById('edit-cancel');
   var chapterModal = document.getElementById('chapter-modal');
@@ -261,6 +265,44 @@
       if (h1) h1.textContent = scenarioTitle;
       document.title = scenarioTitle;
     }
+
+    // Make title editable on click
+    var headerH1 = document.querySelector('#header h1');
+    var btnTitleEdit = document.getElementById('btn-title-edit');
+    var titleModal = document.getElementById('title-modal');
+    var titleInput = document.getElementById('title-input');
+    var titleSave = document.getElementById('title-save');
+    var titleCancel = document.getElementById('title-cancel');
+    if (btnTitleEdit) btnTitleEdit.classList.remove('hidden');
+
+    function openTitleEdit() {
+      titleInput.value = scenarioTitle;
+      titleModal.classList.remove('hidden');
+      titleInput.focus();
+    }
+
+    if (headerH1 && !headerH1.dataset.editable) {
+      headerH1.dataset.editable = 'true';
+      headerH1.style.cursor = 'pointer';
+      headerH1.title = headerH1.getAttribute('data-edit-hint') || 'Click to edit title';
+      headerH1.addEventListener('click', openTitleEdit);
+    }
+    if (btnTitleEdit && !btnTitleEdit.dataset.bound) {
+      btnTitleEdit.dataset.bound = 'true';
+      btnTitleEdit.addEventListener('click', openTitleEdit);
+    }
+    titleSave.addEventListener('click', function() {
+      var newTitle = titleInput.value.trim();
+      if (newTitle) {
+        scenarioTitle = newTitle;
+        headerH1.textContent = scenarioTitle;
+        document.title = scenarioTitle;
+      }
+      titleModal.classList.add('hidden');
+    });
+    titleCancel.addEventListener('click', function() {
+      titleModal.classList.add('hidden');
+    });
 
     // Restore color picker values
     if (bgColorInput) {
@@ -831,10 +873,10 @@
       var metaDiv = document.createElement('div');
       metaDiv.className = 'entry-meta';
 
-      if (speakerIcons[entry.speaker]) {
+      if (entry.overrideIcon || speakerIcons[entry.speaker]) {
         var icon = document.createElement('img');
         icon.className = 'entry-icon';
-        icon.src = speakerIcons[entry.speaker];
+        icon.src = entry.overrideIcon || speakerIcons[entry.speaker];
         metaDiv.appendChild(icon);
       }
 
@@ -961,8 +1003,54 @@
     editText.value = tmp.textContent;
     editColor.value = entry.color;
     editIsKp.checked = entry.isKP;
+    // Icon preview
+    var iconSrc = entry.overrideIcon || speakerIcons[entry.speaker] || '';
+    if (iconSrc) {
+      editIconPreview.src = iconSrc;
+      editIconPreview.style.display = 'block';
+    } else {
+      editIconPreview.src = '';
+      editIconPreview.style.display = 'none';
+    }
     editModal.classList.remove('hidden');
   }
+
+  // Edit icon change/reset
+  editIconChange.addEventListener('click', function() {
+    editIconFile.click();
+  });
+
+  editIconFile.addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      resizeImage(ev.target.result, 128, function(resized) {
+        editIconPreview.src = resized;
+        editIconPreview.style.display = 'block';
+        editIconPreview.dataset.changed = 'true';
+        editIconPreview.dataset.newIcon = resized;
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  });
+
+  editIconReset.addEventListener('click', function() {
+    editIconPreview.dataset.changed = 'reset';
+    editIconPreview.dataset.newIcon = '';
+    if (editingIndex !== null) {
+      var entry = entries[editingIndex];
+      var defaultIcon = speakerIcons[entry.speaker] || '';
+      if (defaultIcon) {
+        editIconPreview.src = defaultIcon;
+        editIconPreview.style.display = 'block';
+      } else {
+        editIconPreview.src = '';
+        editIconPreview.style.display = 'none';
+      }
+    }
+  });
 
   editSave.addEventListener('click', function() {
     if (editingIndex === null) return;
@@ -972,6 +1060,14 @@
     entry.contentHtml = escapeHtml(editText.value).replace(/\n/g, '<br>');
     entry.color = editColor.value;
     entry.isKP = editIsKp.checked;
+    // Save override icon
+    if (editIconPreview.dataset.changed === 'true') {
+      entry.overrideIcon = editIconPreview.dataset.newIcon;
+    } else if (editIconPreview.dataset.changed === 'reset') {
+      delete entry.overrideIcon;
+    }
+    editIconPreview.dataset.changed = '';
+    editIconPreview.dataset.newIcon = '';
     editModal.classList.add('hidden');
     editingIndex = null;
     renderLog();
@@ -1294,8 +1390,8 @@
         html += '</div>\n';
       } else if (e.isSecret) {
         html += '<div class="msg" style="margin-bottom: 0;">\n';
-        if (speakerIcons[e.speaker]) {
-          html += '  <img class="msg-icon" src="' + speakerIcons[e.speaker] + '">\n';
+        if (e.overrideIcon || speakerIcons[e.speaker]) {
+          html += '  <img class="msg-icon" src="' + (e.overrideIcon || speakerIcons[e.speaker]) + '">\n';
         }
         html += '  <div class="msg-body">\n';
         html += '    <div class="msg-name" style="color:' + e.color + ';"><span class="secret-label">[' + escapeHtml(e.tab) + ']</span> ' + escapeHtml(e.speaker) + '</div>\n';
@@ -1304,8 +1400,8 @@
         html += '</div>\n';
       } else {
         html += '<div class="msg">\n';
-        if (speakerIcons[e.speaker]) {
-          html += '  <img class="msg-icon" src="' + speakerIcons[e.speaker] + '">\n';
+        if (e.overrideIcon || speakerIcons[e.speaker]) {
+          html += '  <img class="msg-icon" src="' + (e.overrideIcon || speakerIcons[e.speaker]) + '">\n';
         }
         html += '  <div class="msg-body">\n';
         html += '    <div class="msg-name" style="color:' + e.color + '; text-shadow:' + getTextShadow(e.color, e.speaker) + ';">' + escapeHtml(e.speaker) + '</div>\n';
@@ -1425,9 +1521,9 @@
     if (contrast < 1.8) {
       // Determine shadow color based on background brightness
       if (bgLum > 0.5) {
-        return '0 0 2px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.4)';
+        return '1px 1px 0 rgba(0,0,0,0.6), -1px -1px 0 rgba(0,0,0,0.6), 1px -1px 0 rgba(0,0,0,0.6), -1px 1px 0 rgba(0,0,0,0.6)';
       } else {
-        return '0 0 2px rgba(255,255,255,0.8), 0 0 4px rgba(255,255,255,0.4)';
+        return '1px 1px 0 rgba(255,255,255,0.6), -1px -1px 0 rgba(255,255,255,0.6), 1px -1px 0 rgba(255,255,255,0.6), -1px 1px 0 rgba(255,255,255,0.6)';
       }
     }
     return 'none';
