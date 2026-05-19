@@ -60,6 +60,25 @@
   var tabPanelClose = document.getElementById('tab-panel-close');
   var tabList = document.getElementById('tab-list');
 
+  // Help & Changelog modals
+  var btnHelp = document.getElementById('btn-help');
+  var btnChangelog = document.getElementById('btn-changelog');
+  var helpModal = document.getElementById('help-modal');
+  var changelogModal = document.getElementById('changelog-modal');
+
+  btnHelp.addEventListener('click', function() {
+    helpModal.classList.remove('hidden');
+  });
+  document.getElementById('help-close').addEventListener('click', function() {
+    helpModal.classList.add('hidden');
+  });
+  btnChangelog.addEventListener('click', function() {
+    changelogModal.classList.remove('hidden');
+  });
+  document.getElementById('changelog-close').addEventListener('click', function() {
+    changelogModal.classList.add('hidden');
+  });
+
   // File Loading
   function handleFiles(fileList) {
     var files = Array.from(fileList).filter(function(f) {

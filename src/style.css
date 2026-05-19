@@ -1101,3 +1101,74 @@ body.dark .entry-content mark {
 .version-info {
   opacity: 0.6;
 }
+
+
+/* Wide modal for help/changelog */
+.modal-wide {
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.modal-header-row h3 {
+  margin: 0;
+}
+
+.modal-close {
+  border: none;
+  background: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.modal-close:hover {
+  background: var(--border);
+}
+
+.modal-scroll {
+  overflow-y: auto;
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.modal-scroll h4 {
+  margin: 16px 0 8px;
+  font-size: 0.95rem;
+  color: var(--accent);
+}
+
+.modal-scroll h4:first-child {
+  margin-top: 0;
+}
+
+.modal-scroll ul, .modal-scroll ol {
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+
+.modal-scroll li {
+  margin-bottom: 4px;
+}
+
+#btn-help, #btn-changelog {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
