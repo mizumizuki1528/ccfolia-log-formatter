@@ -235,8 +235,6 @@
     toolbar.classList.remove('hidden');
     logContainer.classList.remove('hidden');
     btnExport.disabled = false;
-    var appFooter = document.getElementById('app-footer');
-    if (appFooter) appFooter.classList.remove('hidden');
 
     // Update header title with scenario title
     if (scenarioTitle) {

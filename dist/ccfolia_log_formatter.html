@@ -1169,7 +1169,7 @@ body.dark .entry-content mark {
 
     <section id="log-container" class="hidden"></section>
 
-    <footer id="app-footer" class="hidden">
+    <footer id="app-footer">
       <span class="version-info">v1.0</span>
     </footer>
 
@@ -1724,8 +1724,6 @@ class CcfoliaParser {
     toolbar.classList.remove('hidden');
     logContainer.classList.remove('hidden');
     btnExport.disabled = false;
-    var appFooter = document.getElementById('app-footer');
-    if (appFooter) appFooter.classList.remove('hidden');
 
     // Update header title with scenario title
     if (scenarioTitle) {
